@@ -8,7 +8,7 @@ timeStart="$(date +%s)"
 # optional: customize parameters
 
 # blockSizeKB is an array of positive integers specifying the differend block sizes (in KB) to use with fio
-# rwMixPrct is an array of integers between 0-100 specifying the % write in the IO mix. % read is $((( 100 - $rwMixPrct[$kk] )))
+# rwMixPrct is an array of integers between 0-100 specifying the % read in the IO mix. % write is $((( 100 - $rwMixPrct[$kk] )))
 # devSizeMB is the size of the ramdisk (in MB) that will serve as the zfs storage backend. Note that there will be 4 images of this size created. Default is to use 1/8 of RAM per image --> 1/2 RAM total. 
 # fioSizeMB is trhe size (in MB) of the file on the zfs dataset that fio uses. default is 3/4 of devSizeMB for blocksizes >= zfs record size. For smaller block sizes this value is reduced proportionally to avoid very long run times.
 
@@ -136,7 +136,7 @@ for rwP in "${rwMixPrct[@]}"; do
 	
 	# generate summary report
 	
-	echo -e "\n----------------------------------------------------------------\n||---- RESULT SUMMARY FOR A $((( 100 - ${rwP} )))% READ / ${rwP}% WRITE WORKLOAD ----||\n----------------------------------------------------------------\n"| tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
+	echo -e "\n----------------------------------------------------------------\n||---- RESULT SUMMARY FOR A ${rwP}% READ / $((( 100 - ${rwP} )))% WRITE WORKLOAD ----||\n----------------------------------------------------------------\n"| tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 	
 	echo -e "READ -- DATA TRANSFER SPEEDS \n" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 	echo -n -e "Block Size (KB):        \t" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
