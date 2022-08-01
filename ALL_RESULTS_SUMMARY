@@ -1,0 +1,182 @@
+
+----------------------------------------------------------------
+||---- RESULT SUMMARY FOR A 0% READ / 100% WRITE WORKLOAD ----||
+----------------------------------------------------------------
+
+WRITE -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	4833MiB/s 	4972MiB/s 	5379MiB/s 	5459MiB/s 	5028MiB/s 	4328MiB/s 	3510MiB/s 	2485MiB/s 	1664MiB/s 	1005MiB/s 	505MiB/s 	
+ZFS (no encryption):    	1675MiB/s 	1635MiB/s 	1631MiB/s 	1625MiB/s 	793MiB/s 	466MiB/s 	286MiB/s 	200MiB/s 	196MiB/s 	96.5MiB/s 	50.4MiB/s 	
+ZFS (native encryption):	1603MiB/s 	1581MiB/s 	1562MiB/s 	1553MiB/s 	511MiB/s 	326MiB/s 	231MiB/s 	185MiB/s 	180MiB/s 	98.9MiB/s 	48.3MiB/s 	
+ZFS (LUKS encryption):  	1459MiB/s 	1437MiB/s 	1423MiB/s 	1420MiB/s 	684MiB/s 	398MiB/s 	239MiB/s 	170MiB/s 	197MiB/s 	97.5MiB/s 	49.7MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	4832	9944	21.5k	43.7k	80.5k	138k	225k	318k	426k	515k	518k	
+ZFS (no encryption):    	1674	3269	6523	13.0k	12.7k	14.9k	18.3k	25.6k	50.2k	49.4k	51.6k	
+ZFS (native encryption):	1603	3161	6248	12.4k	8170	10.4k	14.8k	23.7k	46.1k	50.6k	49.5k	
+ZFS (LUKS encryption):  	1458	2874	5693	11.4k	10.9k	12.7k	15.3k	21.8k	50.4k	49.9k	50.9k	
+
+----------------------------------------------------------------
+||---- RESULT SUMMARY FOR A 20% READ / 80% WRITE WORKLOAD ----||
+----------------------------------------------------------------
+
+READ -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	1006MiB/s 	1049MiB/s 	1069MiB/s 	1074MiB/s 	985MiB/s 	873MiB/s 	695MiB/s 	501MiB/s 	328MiB/s 	200MiB/s 	101MiB/s 	
+ZFS (no encryption):    	380MiB/s 	384MiB/s 	370MiB/s 	364MiB/s 	185MiB/s 	112MiB/s 	73.0MiB/s 	48.9MiB/s 	43.7MiB/s 	23.7MiB/s 	12.0MiB/s 	
+ZFS (native encryption):	318MiB/s 	317MiB/s 	308MiB/s 	299MiB/s 	119MiB/s 	77.6MiB/s 	58.1MiB/s 	45.9MiB/s 	45.6MiB/s 	23.0MiB/s 	12.0MiB/s 	
+ZFS (LUKS encryption):  	336MiB/s 	338MiB/s 	323MiB/s 	320MiB/s 	164MiB/s 	95.8MiB/s 	60.3MiB/s 	41.2MiB/s 	46.4MiB/s 	23.5MiB/s 	11.7MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+READ -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	1005	2098	4276	8593	15.8k	27.9k	44.5k	64.1k	83.9k	102k	104k	
+ZFS (no encryption):    	380	768	1481	2910	2962	3591	4671	6256	11.2k	12.1k	12.3k	
+ZFS (native encryption):	318	634	1232	2393	1911	2481	3717	5879	11.7k	11.8k	12.3k	
+ZFS (LUKS encryption):  	335	676	1292	2563	2627	3064	3860	5272	11.9k	12.0k	12.0k	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	3960MiB/s 	4108MiB/s 	4208MiB/s 	4238MiB/s 	3888MiB/s 	3443MiB/s 	2743MiB/s 	1976MiB/s 	1293MiB/s 	789MiB/s 	399MiB/s 	
+ZFS (no encryption):    	1498MiB/s 	1504MiB/s 	1458MiB/s 	1436MiB/s 	730MiB/s 	443MiB/s 	288MiB/s 	193MiB/s 	172MiB/s 	93.6MiB/s 	47.3MiB/s 	
+ZFS (native encryption):	1253MiB/s 	1242MiB/s 	1213MiB/s 	1180MiB/s 	471MiB/s 	306MiB/s 	229MiB/s 	181MiB/s 	180MiB/s 	90.9MiB/s 	47.4MiB/s 	
+ZFS (LUKS encryption):  	1321MiB/s 	1323MiB/s 	1272MiB/s 	1264MiB/s 	648MiB/s 	378MiB/s 	238MiB/s 	163MiB/s 	183MiB/s 	92.8MiB/s 	46.2MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	3960	8216	16.8k	33.9k	62.2k	110k	176k	253k	331k	404k	408k	
+ZFS (no encryption):    	1498	3008	5832	11.5k	11.7k	14.2k	18.4k	24.7k	44.2k	47.9k	48.4k	
+ZFS (native encryption):	1252	2484	4850	9443	7541	9791	14.7k	23.2k	46.0k	46.5k	48.5k	
+ZFS (LUKS encryption):  	1321	2646	5089	10.1k	10.4k	12.1k	15.2k	20.8k	46.8k	47.5k	47.3k	
+
+----------------------------------------------------------------
+||---- RESULT SUMMARY FOR A 50% READ / 50% WRITE WORKLOAD ----||
+----------------------------------------------------------------
+
+READ -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	2548MiB/s 	2595MiB/s 	2738MiB/s 	2726MiB/s 	2453MiB/s 	2171MiB/s 	1717MiB/s 	1247MiB/s 	820MiB/s 	494MiB/s 	251MiB/s 	
+ZFS (no encryption):    	1171MiB/s 	1170MiB/s 	1158MiB/s 	1118MiB/s 	611MiB/s 	380MiB/s 	275MiB/s 	162MiB/s 	161MiB/s 	79.7MiB/s 	42.0MiB/s 	
+ZFS (native encryption):	795MiB/s 	796MiB/s 	778MiB/s 	752MiB/s 	378MiB/s 	259MiB/s 	203MiB/s 	173MiB/s 	159MiB/s 	81.5MiB/s 	41.7MiB/s 	
+ZFS (LUKS encryption):  	1065MiB/s 	1060MiB/s 	1037MiB/s 	1014MiB/s 	535MiB/s 	332MiB/s 	213MiB/s 	152MiB/s 	151MiB/s 	82.1MiB/s 	42.0MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+READ -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	2548	5189	10.9k	21.8k	39.2k	69.5k	110k	160k	210k	253k	257k	
+ZFS (no encryption):    	1171	2339	4630	8945	9780	12.2k	17.6k	20.8k	41.1k	40.8k	43.0k	
+ZFS (native encryption):	794	1592	3112	6017	6041	8292	13.0k	22.2k	40.8k	41.7k	42.7k	
+ZFS (LUKS encryption):  	1065	2119	4146	8111	8561	10.6k	13.6k	19.5k	38.7k	42.0k	43.0k	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	2576MiB/s 	2589MiB/s 	2726MiB/s 	2708MiB/s 	2437MiB/s 	2157MiB/s 	1706MiB/s 	1238MiB/s 	815MiB/s 	490MiB/s 	249MiB/s 	
+ZFS (no encryption):    	1184MiB/s 	1167MiB/s 	1153MiB/s 	1111MiB/s 	607MiB/s 	377MiB/s 	273MiB/s 	161MiB/s 	159MiB/s 	79.2MiB/s 	41.7MiB/s 	
+ZFS (native encryption):	803MiB/s 	794MiB/s 	775MiB/s 	747MiB/s 	375MiB/s 	257MiB/s 	202MiB/s 	172MiB/s 	158MiB/s 	81.0MiB/s 	41.5MiB/s 	
+ZFS (LUKS encryption):  	1077MiB/s 	1058MiB/s 	1032MiB/s 	1007MiB/s 	532MiB/s 	330MiB/s 	212MiB/s 	151MiB/s 	150MiB/s 	81.5MiB/s 	41.7MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	2576	5178	10.9k	21.7k	39.0k	69.0k	109k	159k	209k	251k	255k	
+ZFS (no encryption):    	1184	2334	4610	8886	9715	12.1k	17.5k	20.6k	40.8k	40.5k	42.7k	
+ZFS (native encryption):	803	1588	3099	5976	6001	8237	12.9k	22.0k	40.5k	41.5k	42.4k	
+ZFS (LUKS encryption):  	1076	2115	4129	8057	8504	10.6k	13.5k	19.4k	38.4k	41.7k	42.7k	
+
+----------------------------------------------------------------
+||---- RESULT SUMMARY FOR A 80% READ / 20% WRITE WORKLOAD ----||
+----------------------------------------------------------------
+
+READ -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	4361MiB/s 	4344MiB/s 	4351MiB/s 	4252MiB/s 	3987MiB/s 	3483MiB/s 	2770MiB/s 	2042MiB/s 	1314MiB/s 	756MiB/s 	420MiB/s 	
+ZFS (no encryption):    	2573MiB/s 	2620MiB/s 	2549MiB/s 	2423MiB/s 	1466MiB/s 	1036MiB/s 	799MiB/s 	544MiB/s 	429MiB/s 	207MiB/s 	116MiB/s 	
+ZFS (native encryption):	1327MiB/s 	1299MiB/s 	1290MiB/s 	1267MiB/s 	823MiB/s 	607MiB/s 	756MiB/s 	471MiB/s 	438MiB/s 	224MiB/s 	116MiB/s 	
+ZFS (LUKS encryption):  	2493MiB/s 	2453MiB/s 	2410MiB/s 	2326MiB/s 	1325MiB/s 	934MiB/s 	687MiB/s 	480MiB/s 	437MiB/s 	226MiB/s 	115MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+READ -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	4361	8687	17.4k	34.0k	63.8k	111k	177k	261k	336k	387k	430k	
+ZFS (no encryption):    	2572	5239	10.2k	19.4k	23.5k	33.2k	51.1k	69.6k	110k	106k	118k	
+ZFS (native encryption):	1327	2598	5161	10.1k	13.2k	19.4k	48.4k	60.2k	112k	114k	119k	
+ZFS (LUKS encryption):  	2492	4905	9641	18.6k	21.2k	29.9k	44.0k	61.5k	112k	115k	118k	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	1110MiB/s 	1095MiB/s 	1098MiB/s 	1062MiB/s 	996MiB/s 	870MiB/s 	692MiB/s 	510MiB/s 	328MiB/s 	189MiB/s 	105MiB/s 	
+ZFS (no encryption):    	655MiB/s 	661MiB/s 	643MiB/s 	605MiB/s 	366MiB/s 	259MiB/s 	200MiB/s 	136MiB/s 	107MiB/s 	51.8MiB/s 	28.9MiB/s 	
+ZFS (native encryption):	338MiB/s 	328MiB/s 	326MiB/s 	317MiB/s 	206MiB/s 	152MiB/s 	189MiB/s 	118MiB/s 	109MiB/s 	55.8MiB/s 	29.0MiB/s 	
+ZFS (LUKS encryption):  	634MiB/s 	619MiB/s 	608MiB/s 	581MiB/s 	331MiB/s 	233MiB/s 	172MiB/s 	120MiB/s 	109MiB/s 	56.3MiB/s 	28.7MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+WRITE -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	1109	2190	4392	8497	15.9k	27.8k	44.3k	65.3k	84.0k	96.7k	107k	
+ZFS (no encryption):    	654	1321	2573	4842	5858	8281	12.8k	17.4k	27.4k	26.5k	29.6k	
+ZFS (native encryption):	337	655	1302	2532	3289	4850	12.1k	15.0k	28.0k	28.6k	29.7k	
+ZFS (LUKS encryption):  	634	1237	2433	4648	5293	7463	11.0k	15.4k	27.9k	28.8k	29.4k	
+
+----------------------------------------------------------------
+||---- RESULT SUMMARY FOR A 100% READ / 0% WRITE WORKLOAD ----||
+----------------------------------------------------------------
+
+READ -- DATA TRANSFER SPEEDS 
+
+Block Size (KB):        	1024     	 512     	 256     	 128     	  64     	  32     	  16     	   8     	   4     	   2     	   1     	
+TMPFS:                  	5524MiB/s 	5261MiB/s 	5580MiB/s 	5537MiB/s 	5041MiB/s 	4502MiB/s 	3478MiB/s 	2544MiB/s 	1635MiB/s 	989MiB/s 	511MiB/s 	
+ZFS (no encryption):    	4528MiB/s 	4501MiB/s 	4391MiB/s 	4024MiB/s 	2662MiB/s 	2141MiB/s 	3151MiB/s 	1841MiB/s 	817MiB/s 	606MiB/s 	293MiB/s 	
+ZFS (native encryption):	1749MiB/s 	1738MiB/s 	1702MiB/s 	1715MiB/s 	1416MiB/s 	1274MiB/s 	3191MiB/s 	1832MiB/s 	1143MiB/s 	605MiB/s 	282MiB/s 	
+ZFS (LUKS encryption):  	4452MiB/s 	4569MiB/s 	4298MiB/s 	3997MiB/s 	2782MiB/s 	2086MiB/s 	3184MiB/s 	1841MiB/s 	1133MiB/s 	570MiB/s 	260MiB/s 	
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+READ -- IOPS 
+
+Block Size (KB):        	1024	 512	 256	 128	  64	  32	  16	   8	   4	   2	   1	
+TMPFS:                  	5524	10.5k	22.3k	44.3k	80.7k	144k	223k	326k	419k	507k	523k	
+ZFS (no encryption):    	4527	9001	17.6k	32.2k	42.6k	68.5k	202k	236k	209k	311k	300k	
+ZFS (native encryption):	1749	3475	6806	13.7k	22.7k	40.8k	204k	235k	293k	310k	289k	
+ZFS (LUKS encryption):  	4452	9137	17.2k	32.0k	44.5k	66.7k	204k	236k	290k	292k	266k	
+
