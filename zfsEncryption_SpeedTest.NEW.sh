@@ -9,7 +9,7 @@ timeStart="$(date +%s)"
 
 # blockSizeKB is an array of positive integers specifying the differend block sizes (in KB) to use with fio
 # rwMixPrct is an array of integers between 0-100 specifying the % read in the IO mix. % write is $((( 100 - $rwMixPrct[$kk] )))
-# devSizeMB is the size of the ramdisk (in MB) that will serve as the zfs storage backend. Note that there will be 4 images of this size created. Default is to use 1/8 of RAM per image --> 1/2 RAM total. 
+# devSizeMB is the size of the ramdisk (in MB) that will serve as the zfs storage backend. Default is to use 1/4 of RAM. Note: this parameter is not (directly) used when brd ramdiskjs are used.
 # fioSizeMB is trhe size (in MB) of the file on the zfs dataset that fio uses. default is 3/4 of devSizeMB for blocksizes >= zfs record size. For smaller block sizes this value is reduced proportionally to avoid very long run times.
 # nParallel_fio is a positive integer, that describes how many parallel runs the fio command uses. The sum of the sizes of all runs equalos $fioSizeMB
 # zpoolCreateOpts list the flags to use when creating the temporary ZFS pools
@@ -37,7 +37,7 @@ fioSizeMB=$((( ( 3 * ${devSizeMB} ) / ( 4 * ${nParallel_fio} ) )))
 
 zpoolCreateOpts='-o ashift=12 -o cachefile=none -o failmode=continue -O mountpoint=none -O atime=off -O checksum=sha256 -O compression=lz4 -O dedup=off -O defcontext=none -O dnodesize=auto -O exec=on -O logbias=throughput -O overlay=on -O primarycache=all -O readonly=off -O redundant_metadata=all -O relatime=off -O rootcontext=none -O secondarycache=none -O sync=standard -O volmode=full -O xattr=sa'
 
-testTypes=(TMPFS BASE ZFS LUKS)
+testTypes=(BASE ZFS LUKS)
 
 localMode=0
 
@@ -56,23 +56,21 @@ equalizeStrLength() {
 	local maxStrLength
 	local -a aIn
 	
-	mapfile -t aIn < <(cat "${0}")
+	mapfile -t aIn < <(tee)
 	
-	for kk in "${!aIn[@]}"; do
-		(( ${#aIn[${kk}]} > ${maxStrLength} )) && maxStrLength=${#aIn[${kk}]}
-	done
+	maxStrLength=$(printf '%s\n' "${aIn[@]}" | wc -L)
 
 	for kk in "${!aIn[@]}"; do
-		aIn[$kk]="${aIn[$kk]}$(ll=0; while (( ${ll} < ( ${maxStrLength} - ${#aIn[$kk]} ) )); do echo -n ' '; ((ll++)); done):"
+		aIn[$kk]="${aIn[$kk]}$(ll=0; while (( ${ll} < ( ${maxStrLength} - ${#aIn[$kk]} ) )); do echo -n ' '; ((ll++)); done)"
 	done
 
 	printf '%s\n' "${aIn[@]}"
 }
 
-mapfile -t testNameStrMod < <(for nn in testTypes[@]; do echo "${testNameStr0["${nn}"]} "; done | equalizeStrLength)
+mapfile -t testNameStrMod < <(for nn in BLOCKSIZE "${testTypes[@]}"; do echo "${testNameStr0["${nn}"]} "; done | equalizeStrLength)
 kk=0
 declare -A testNameStr
-for nn in "${testTypes[@]}"; do
+for nn in BLOCKSIZE "${testTypes[@]}"; do
 	testNameStr["${nn}"]="${testNameStrMod[$kk]}"
 	((kk++))
 done
@@ -253,12 +251,12 @@ for rwP in "${rwMixPrct[@]}"; do
 		(( ${rwP} == 100 )) && echo "${ioType}" | grep -qE '((write)|(mixed))(_IOPS)?' && continue
 
 		echo -e "${ioType^^} \n" | sed -E s/'_IOPS'/' (IOPS)'/ | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
-		echo -n -e "${testNameStr[BLOCKSIZE]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
-		printf '%s'"$([[ "${ioType}" == *IOPS ]] && echo '    ')"'\t' "${blockSizeStr[@]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
+		echo -n -e "${testNameStr[BLOCKSIZE]}: " | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
+		printf '%s'"$([[ "${ioType}" == *IOPS ]] || echo '    ')"'\t' "${blockSizeStr[@]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 		echo "" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 
 		for nn in "${testTypes[@]}"; do
-			echo -n -e "${testNameStr["${nn}"]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
+			echo -n -e "${testNameStr["${nn}"]}: " | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 			echo "${resultsALL["test${nn}_rw${rwP}_${ioType}"]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 		done
 
