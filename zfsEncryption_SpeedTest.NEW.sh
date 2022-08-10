@@ -23,54 +23,63 @@ timeStart="$(date +%s)"
 
 # Note: the bottom level block device used by the `zpool create` or `cryptsetup luksFormat` command can be made 2 possible ways, depending if kernel module "brd" is already in use`
 #       if the brd kernel module is not already in use and localMode=0; the brd kernel module (which creates /dev/ramX block devices) is used for all tests except type TMPFS
-#       if the brd kernel module is already in use, then a tmpfs is mounted, a file with alll 0's (filled with dd) is added to it, and a loop device (/dev/loopX) using that file 
+#       if the brd kernel module is already in use, then a tmpfs is mounted, a file with all 0's (filled with dd) is added to it, and a loop device (/dev/loopX) using that file 
 
 #blockSizeKB=(1024 512 256 128 64 32 16 8 4 2 1)
-#rwMixPrct=(0 20 50 80 100)
 #nParallel_fio=$((( $(nproc) / 2 )))
 #testTypes=(TMPFS BASE ZFS LUKS LUKS_ZFS)
 
 blockSizeKB=(128 4)
-rwMixPrct=(0 50 100)
+rwMixPrct=(0 20 50 80 100)
 devSizeMB=$((( $(cat /proc/meminfo | grep MemTotal | awk '{print $2}') / 4096 )))
 nParallel_fio=2
 fioSizeMB=$((( ( 3 * ${devSizeMB} ) / ( 4 * ${nParallel_fio} ) )))
 
 zpoolCreateOpts='-o ashift=12 -o cachefile=none -o failmode=continue -O mountpoint=none -O atime=off -O checksum=sha256 -O compression=lz4 -O dedup=off -O defcontext=none -O dnodesize=auto -O exec=on -O logbias=throughput -O overlay=on -O primarycache=all -O readonly=off -O redundant_metadata=all -O relatime=off -O rootcontext=none -O secondarycache=none -O sync=standard -O volmode=full -O xattr=sa'
 
-testTypes=(BASE ZFS LUKS)
+testTypes=(TMPFS BASE ZFS LUKS)
 
 localMode=0
 
 # make text formatting later on look nice
 
-declare -A testNames
-testNames[TMPFS]='TMPFS' 
-testNames[BASE]='ZFS (no encryption)' 
-testNames[ZFS]='ZFS (native encryption)' 
-testNames[LUKS]='ZFS (LUKS encryption)' 
-testNames[LUKS_ZFS]='ZFS (LUKS+native encryption)'
-testNames[BLOCKSIZE]='Block Size (KB)'
+declare -A testNameStr0
+testNameStr0[TMPFS]='TMPFS' 
+testNameStr0[BASE]='ZFS (no encryption)' 
+testNameStr0[ZFS]='ZFS (native encryption)' 
+testNameStr0[LUKS]='ZFS (LUKS encryption)' 
+testNameStr0[LUKS_ZFS]='ZFS (LUKS+native encryption)'
+testNameStr0[BLOCKSIZE]='Block Size (KB)'
 
-maxNameLength=0
-for kk in "${!testNames[@]}"; do
-	(( ${#testNames[$kk]} > ${maxNameLength} )) && maxNameLength=${#testNames[$kk]}
-done
+equalizeStrLength() {
+	# Makes all inputs (assumed to be strings) an equal length by padding them with spaces
+	local maxStrLength
+	local -a aIn
+	
+	mapfile -t aIn < <(cat "${0}")
+	
+	for kk in "${!aIn[@]}"; do
+		(( ${#aIn[${kk}]} > ${maxStrLength} )) && maxStrLength=${#aIn[${kk}]}
+	done
 
-for kk in "${!testNames[@]}"; do
-	testNames[$kk]="${testNames[$kk]}$(ll=0; while (( ${ll} < ( ${maxNameLength} - ${#testNames[$kk]} ) )); do echo -n ' '; ((ll++)); done):"
-done
+	for kk in "${!aIn[@]}"; do
+		aIn[$kk]="${aIn[$kk]}$(ll=0; while (( ${ll} < ( ${maxStrLength} - ${#aIn[$kk]} ) )); do echo -n ' '; ((ll++)); done):"
+	done
 
-blockSizeStr=("${blockSizeKB[@]}")
-for kk in 1 2 3; do 
-	blockSizeStr[$kk]=" ${blockSizeStr[$kk]}"
+	printf '%s\n' "${aIn[@]}"
+}
+
+mapfile -t testNameStrMod < <(for nn in testTypes[@]; do echo "${testNameStr0["${nn}"]} "; done | equalizeStrLength)
+kk=0
+declare -A testNameStr
+for nn in "${testTypes[@]}"; do
+	testNameStr["${nn}"]="${testNameStrMod[$kk]}"
+	((kk++))
 done
-for kk in 4 5 6; do 
-	blockSizeStr[$kk]="  ${blockSizeStr[$kk]}"
-done
-for kk in 7 8 9 10; do 
-	blockSizeStr[$kk]="   ${blockSizeStr[$kk]}"
-done
+unset testNameStrMod
+unset testNameStr0
+
+mapfile -t blockSizeStr < <(printf '%s\n' "${blockSizeKB[@]}" | equalizeStrLength)
 
 # move old results
 
@@ -81,6 +90,8 @@ fi
 
 mkdir -p ./zfsEncryption_SpeedTest_results
 
+# figure out whether or not to use "modprobe brd"
+
 if lsmod | grep -q brd || (( ${localMode} == 1 )); then
 	brdFlag=0
 else
@@ -90,9 +101,9 @@ fi
 # install fio 
 # this command is Fedora-specific....install on other distros will vary
 
-{ [[ -f /bin/rpm ]] && [[ -f /bin/dnf ]]; } && rpm -qa | grep -q fio || dnf install fio
+{ [[ -f /bin/rpm ]] && [[ -f /bin/dnf ]]; } && { rpm -qa | grep -q fio || dnf install fio; }
 
-# BEGHIN MAIN LOOP OVER TEST CASES
+# BEGIN MAIN LOOP OVER TEST CASES
 
 unset devALL
 unset resultsALL
@@ -112,6 +123,8 @@ for nn in "${testTypes[@]}"; do
 		modprobe brd rd_nr=1 rd_size=$((( ${devSizeMB} * 1024 )))
 		
 		devALL["${nn}$( [[ "${nn}" == LUKS* ]] && echo '0' )"]="/dev/ram0"
+	else
+		echo "SETTING UP RAMDISK USING TMPFS + LOOP DEVICE" >&2
 	fi
 
 	# always mount a tmpfs unless [[ localMode == 1 ]]. If using brd ramdisk it goes mostly unused.
@@ -126,16 +139,19 @@ for nn in "${testTypes[@]}"; do
 		# create tmpfs-backed zerod file for loop device
 		(( ${brdFlag} == 0 )) && dd if=/dev/zero of=/mnt/test${nn}/file${nn}.img bs=1M count="${devSizeMB}"
 		
-		# generate keyfiles
+		# generate zfs native encryption keyfile
 		[[ "${nn}" == *ZFS ]] && openssl rand -out /mnt/test${nn}/keyZFS 32
-		[[ "${nn}" == LUKS* ]] && openssl rand -out /mnt/test${nn}/keyLUKS 64
-	
+
+
 		# setup loop device	
 		(( ${brdFlag} == 0 )) && devALL["${nn}$( [[ "${nn}" == LUKS* ]] && echo '0' )"]="$(losetup --show -v -f /mnt/test${nn}/file${nn}.img)"
 
 		if [[ "${nn}" == LUKS* ]]; then
-
-			# setup cryptsetup for LUKS options
+		
+			# generate LUKS keyfile
+			openssl rand -out /mnt/test${nn}/keyLUKS 64
+	
+			# setup cryptsetup for LUKS test cases
 			cryptsetup luksFormat "${devALL["${nn}0"]}" /mnt/test${nn}/keyLUKS -q --type luks2 --hash sha256 --cipher aes-xts-plain64 --key-size 512 --use-random --sector-size 4096 --label crypt${nn}
 			cryptsetup open --type luks2 "${devALL["${nn}0"]}" --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue crypt${nn} --key-file=/mnt/test${nn}/keyLUKS
 			
@@ -214,7 +230,7 @@ for nn in "${testTypes[@]}"; do
 	{ (( ${localMode} == 0 )) || [[ "${nn}" == 'TMPFS' ]]; } && umount "/mnt/test${nn}"
 
 	# unload brd kmod --> destroy brd ramdisk and removes /dev/ram0
-	(( ${brdFlag} == 1 )) && [[ "${nn}" != 'TMPFS' ]] && modprobe -r brd 
+	(( ${brdFlag} > 0 )) && [[ "${nn}" != 'TMPFS' ]] && modprobe -r brd 
 		
 	echo "DONE" >&2
 
@@ -233,16 +249,16 @@ for rwP in "${rwMixPrct[@]}"; do
 
 	for ioType in read write mixed read_IOPS write_IOPS mixed_IOPS; do
 	
-		(( ${rwP} == 0 )) && echo "${ioType}" | grep -qE '((read)|(mixed))(IOPS)?' && continue
-		(( ${rwP} == 100 )) && echo "${ioType}" | grep -qE '((write)|(mixed))(IOPS)?' && continue
+		(( ${rwP} == 0 )) && echo "${ioType}" | grep -qE '((read)|(mixed))(_IOPS)?' && continue
+		(( ${rwP} == 100 )) && echo "${ioType}" | grep -qE '((write)|(mixed))(_IOPS)?' && continue
 
 		echo -e "${ioType^^} \n" | sed -E s/'_IOPS'/' (IOPS)'/ | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
-		echo -n -e "${testNames[BLOCKSIZE]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
+		echo -n -e "${testNameStr[BLOCKSIZE]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 		printf '%s'"$([[ "${ioType}" == *IOPS ]] && echo '    ')"'\t' "${blockSizeStr[@]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 		echo "" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 
 		for nn in "${testTypes[@]}"; do
-			echo -n -e "${testNames["${nn}"]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
+			echo -n -e "${testNameStr["${nn}"]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 			echo "${resultsALL["test${nn}_rw${rwP}_${ioType}"]}" | tee -a ./zfsEncryption_SpeedTest_results/ALL_RESULTS_SUMMARY
 		done
 
@@ -251,7 +267,7 @@ for rwP in "${rwMixPrct[@]}"; do
 done
 
 # make sure brd kmod is unloaded 
-modprobe -r brd
+(( ${brdFlag} > 0 )) && modprobe -r brd
 
 # print how long the code took to run
 timeEnd="$(date +%s)"
